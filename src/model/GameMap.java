@@ -30,11 +30,20 @@ public class GameMap implements Drawable {
             for (int i = 0; i < mapLength; i++) {
                 for (int j = 0; j < mapWidth; j++) {
                     map[i][j] = content.charAt(Idx++);
+                    if (map[i][j]=='3'){
+                        playerX= j;
+                        playerY =i;
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+    public boolean isCollision( int x, int y){
+        if (x < 0 || y < 0 || x >= mapWidth || y >= mapLength)
+            return true;
+        return map[y][x]=='0';
     }
 
     @Override
