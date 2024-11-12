@@ -32,9 +32,18 @@ public class Player extends Entity{
 
     }
     public void move(String input) {
+        if (locX<1 ){
+            locX+=23;
+            return;
+        }
+        if (locX>23){
+            locX-=23;
+            return;
+        }
         desiredDirection = input;
         int newX = locX;
         int newY = locY;
+
 
 
         if (!desiredDirection.isEmpty()) {
