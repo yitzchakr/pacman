@@ -5,7 +5,7 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Player extends Entity{
-    String direction ="";
+    String direction ="up";
     String desiredDirection = "";
     GameMap gameMap;
     final int playerHeight =32;
@@ -24,7 +24,7 @@ public class Player extends Entity{
 
     public void update (String keyInput){
         pixelCounter += speed;
-        if (pixelCounter==32){
+        if (pixelCounter >=32){
             pixelCounter=0;
             move(keyInput);
         }
@@ -55,7 +55,7 @@ public class Player extends Entity{
             }
 
 
-            if (!gameMap.isCollision(newX, newY)) {
+            if (!gameMap.isCollision(newX, newY) ) {
                 locX = newX;
                 locY = newY;
                 direction = desiredDirection;
@@ -87,7 +87,28 @@ public class Player extends Entity{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        g2.drawImage(image,locX *gameMap.tileSize,locY*gameMap.tileSize,playerWidth,playerHeight,null);
+        switch (direction) {
+            case ("up"):
+                if (!gameMap.isCollision(locX,locY-1)) {
+                    g2.drawImage(image, locX * gameMap.tileSize, locY * gameMap.tileSize - pixelCounter, playerWidth, playerHeight, null);
+                }else g2.drawImage(image, locX * gameMap.tileSize, locY * gameMap.tileSize , playerWidth, playerHeight, null);
+                break;
+            case ("down"):
+                if (!gameMap.isCollision(locX,locY+1)) {
+                    g2.drawImage(image, locX * gameMap.tileSize, locY * gameMap.tileSize + pixelCounter, playerWidth, playerHeight, null);
+                }else g2.drawImage(image, locX * gameMap.tileSize, locY * gameMap.tileSize , playerWidth, playerHeight, null);
+                break;
+            case ("left"):
+                if (!gameMap.isCollision(locX-1,locY)) {
+                    g2.drawImage(image, locX * gameMap.tileSize - pixelCounter, locY * gameMap.tileSize, playerWidth, playerHeight, null);
+                }else g2.drawImage(image, locX * gameMap.tileSize, locY * gameMap.tileSize , playerWidth, playerHeight, null);
+                break;
+            case ("right"):
+                if (!gameMap.isCollision(locX+1,locY)) {
+                    g2.drawImage(image, locX * gameMap.tileSize + pixelCounter, locY * gameMap.tileSize, playerWidth, playerHeight, null);
+                }else g2.drawImage(image, locX * gameMap.tileSize, locY * gameMap.tileSize , playerWidth, playerHeight, null);
+                break;
+        }
 
     }
 }
