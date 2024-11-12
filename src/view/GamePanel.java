@@ -1,22 +1,39 @@
 package view;
 
-import javax.swing.*;
+import model.GameMap;
+import model.Player;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
 
-    public final int tileSize = 16;
-    public final int maxScreenCol = 40;
-    public final int maxScreenRow = 40;
+    public final int tileSize = 32;
+    public final int maxScreenCol = 35;
+    public final int maxScreenRow = 25;
+
     public final int screeWidth = maxScreenCol * tileSize;
     public final int screenLength = maxScreenRow * tileSize;
-public GamePanel(){
-    this.setPreferredSize(new Dimension(screeWidth,screenLength));
-    this.setDoubleBuffered(true);
-    this.setBackground(Color.black);
-    this.setVisible(true);
+    GameMap gameMap;
+    Player player;
 
-}
+    public GamePanel(Player player, GameMap gameMap) {
+        this.setPreferredSize(new Dimension(screeWidth, screenLength));
+        this.setDoubleBuffered(true);
+        this.setBackground(Color.black);
+        this.setVisible(true);
+        this.setFocusable(true);
+        this.gameMap= gameMap;
+        this.player = player;
+    }
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        gameMap.draw(g2);
+        player.draw(g2);
+        g2.dispose();
+    }
+
+
 
 }
