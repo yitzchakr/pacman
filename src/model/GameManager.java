@@ -17,8 +17,8 @@ public class GameManager implements Drawable {
         this.player = player;
         this.gameMap = gameMap;
         foodMap = new Food[gameMap.mapLength][gameMap.mapWidth];
-        loadMap();
         this.ghosts = ghosts;
+        loadMap();
     }
     public void update(){
     updateScore();
@@ -32,7 +32,12 @@ public class GameManager implements Drawable {
                     foodMap[i][j]= new Coin();
                 else if (gameMap.map[i][j]=='2')
                     foodMap[i][j]= new BigCoin();
-
+                else if (gameMap.map[i][j]=='4'){
+                    for (Ghost ghost: ghosts) {
+                        ghost.locX = j;
+                        ghost.locY = i;
+                    }
+                }
             }
 
         }
@@ -46,6 +51,9 @@ public class GameManager implements Drawable {
         }else    if (food!= null && food.getClass()== BigCoin.class){
             foodMap[player.locY][player.locX]=null;
             score += bigCoin.value;
+            for (Ghost ghost : ghosts){
+                ghost.chaseable=false;
+            }
         }
     }
 

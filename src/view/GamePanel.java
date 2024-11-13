@@ -3,6 +3,7 @@ package view;
 import model.GameManager;
 import model.GameMap;
 import model.Player;
+import model.ghost.Ghost;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +19,9 @@ public class GamePanel extends JPanel {
     GameMap gameMap;
     Player player;
     GameManager gameManager;
+    Ghost[]ghosts;
 
-    public GamePanel(Player player, GameMap gameMap, GameManager gameManager) {
+    public GamePanel(Player player, GameMap gameMap, GameManager gameManager, Ghost[]ghosts) {
         this.setPreferredSize(new Dimension(screeWidth, screenLength));
         this.setDoubleBuffered(true);
         this.setBackground(Color.black);
@@ -28,6 +30,7 @@ public class GamePanel extends JPanel {
         this.gameMap= gameMap;
         this.player = player;
         this.gameManager= gameManager;
+        this.ghosts = ghosts;
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -35,6 +38,8 @@ public class GamePanel extends JPanel {
         gameMap.draw(g2);
         player.draw(g2);
         gameManager.draw(g2);
+        for (Ghost ghost : ghosts)
+            ghost.draw(g2);
         g2.dispose();
     }
 

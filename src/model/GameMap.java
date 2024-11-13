@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class GameMap implements Drawable {
     public final int mapLength =25;
     public final int mapWidth =25;
-    int tileSize =32;
+    public int tileSize =32;
     int playerX;
     int playerY;
 

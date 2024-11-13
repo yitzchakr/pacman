@@ -15,10 +15,10 @@ public class GameControl implements Runnable {
     GameMap gameMap = new GameMap();
     Player player = new Player(gameMap);
     Thread gameThread;
-    GhostFactory ghostFactory = new GhostFactory();
+    GhostFactory ghostFactory = new GhostFactory(gameMap);
     Ghost[]ghosts = ghostFactory.createGhosts();
     GameManager gameManager = new GameManager(player,gameMap,ghosts);
-    GamePanel gamePanel = new GamePanel(player,gameMap,gameManager);
+    GamePanel gamePanel = new GamePanel(player,gameMap,gameManager,ghosts);
     JFrame window = new JFrame();
 
 
