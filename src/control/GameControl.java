@@ -1,7 +1,10 @@
 package control;
 
+import model.GameManager;
 import model.GameMap;
 import model.Player;
+import model.ghost.Ghost;
+import model.ghost.GhostFactory;
 import view.GamePanel;
 
 import javax.swing.*;
@@ -12,8 +15,12 @@ public class GameControl implements Runnable {
     GameMap gameMap = new GameMap();
     Player player = new Player(gameMap);
     Thread gameThread;
-    GamePanel gamePanel = new GamePanel(player,gameMap);
+    GhostFactory ghostFactory = new GhostFactory();
+    Ghost[]ghosts = ghostFactory.createGhosts();
+    GameManager gameManager = new GameManager(player,gameMap,ghosts);
+    GamePanel gamePanel = new GamePanel(player,gameMap,gameManager);
     JFrame window = new JFrame();
+
 
     public GameControl() {
     }
@@ -49,6 +56,7 @@ public class GameControl implements Runnable {
                 keyInput ="";
         }
         player.update(keyInput);
+        gameManager.update();
 
     }
 

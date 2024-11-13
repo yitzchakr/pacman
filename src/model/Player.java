@@ -12,6 +12,7 @@ public class Player extends Entity{
     final int playerWidth = 32;
     int pixelCounter= 0;
 
+
     public Player (GameMap gameMap){
         this.gameMap= gameMap;
         locX = gameMap.playerX;
@@ -59,6 +60,7 @@ public class Player extends Entity{
                 locX = newX;
                 locY = newY;
                 direction = desiredDirection;
+
                 return;
             }
         }
