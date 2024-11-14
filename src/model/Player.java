@@ -5,23 +5,31 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Player extends Entity {
-    String direction = "down";
-    String desiredDirection = "";
-    GameMap gameMap;
+     private GameMap gameMap;
+     private String direction = "down";
+
     final int playerHeight = 32;
     final int playerWidth = 32;
-    int pixelCounter = 0;
-    int pictureCounter = 0;
-    boolean switchPicture;
-    int spriteCounter = 0;
+   private int pixelCounter = 0;
+    private int pictureCounter = 0;
+    private boolean switchPicture;
+   private int spriteCounter = 0;
+   int lives;
+   int startX;
+   int startY;
 
 
     public Player(GameMap gameMap) {
         this.gameMap = gameMap;
-        locX = gameMap.playerX;
-        locY = gameMap.playerY;
+        locX = startX=gameMap.playerX;
+        locY = startY= gameMap.playerY;
         speed = 4;
+        lives = 3;
         loadPictures();
+    }
+    public void setDefaultValues(){
+        locX = startX;
+        locY = startY;
     }
 
 
@@ -54,13 +62,12 @@ public class Player extends Entity {
             pictureCounter = 0;
             return;
         }
-        desiredDirection = input;
         int newX = locX;
         int newY = locY;
 
 
-        if (!desiredDirection.isEmpty()) {
-            switch (desiredDirection) {
+        if (!input.isEmpty()) {
+            switch (input) {
                 case "up":
                     newY -= 1;
                     break;
@@ -79,7 +86,7 @@ public class Player extends Entity {
             if (!gameMap.isCollision(newX, newY)) {
                 locX = newX;
                 locY = newY;
-                direction = desiredDirection;
+                direction = input;
                 pictureCounter = 0;
                 return;
             }
@@ -124,7 +131,6 @@ public class Player extends Entity {
                         switchPicture = true;
                     }
                     g2.drawImage(images[1], locX * gameMap.tileSize, locY * gameMap.tileSize + 32 - pictureCounter, playerWidth, playerHeight, null);
-
                 }
                 break;
             case ("down"):
@@ -138,7 +144,6 @@ public class Player extends Entity {
                         switchPicture = true;
                     }
                     g2.drawImage(images[3], locX * gameMap.tileSize, locY * gameMap.tileSize - 32 + pictureCounter, playerWidth, playerHeight, null);
-
                 }
                 break;
             case ("left"):
@@ -152,8 +157,6 @@ public class Player extends Entity {
                         switchPicture = true;
                     }
                     g2.drawImage(images[5], locX * gameMap.tileSize+32 -pictureCounter, locY * gameMap.tileSize , playerWidth, playerHeight, null);
-
-
                 }
                 break;
             case ("right"):
@@ -165,7 +168,6 @@ public class Player extends Entity {
                     if (spriteCounter == 0)
                         switchPicture = true;
                     g2.drawImage(images[7], locX * gameMap.tileSize - 32 + pictureCounter, locY * gameMap.tileSize, playerWidth, playerHeight, null);
-
                 }
                 break;
 

@@ -8,15 +8,24 @@ import java.awt.*;
 
 public abstract class Ghost extends Entity implements Drawable {
     GameMap gameMap;
-    public  int startX;
+    public int startX;
     public int startY;
     public boolean chaseable = true;
     public int escapeTimer = 0;
     public int scatterTimer;
 
+
     public Ghost(GameMap gameMap) {
         this.gameMap = gameMap;
 
+    }
+
+   public void setDefaultValues() {
+        chaseable = true;
+        escapeTimer = 0;
+        scatterTimer = 0;
+        locX = startX;
+        locY = startY;
     }
 
     public void update() {
@@ -39,17 +48,17 @@ public abstract class Ghost extends Entity implements Drawable {
     }
 
 
-    public abstract void chase() ;
+    public abstract void chase();
 
 
-        public void escape () {
-
-        }
-
-        public void draw (Graphics g2){
-
-            g2.drawImage(testImage, locX * gameMap.tileSize, locY * gameMap.tileSize, gameMap.tileSize, gameMap.tileSize, null);
-        }
+    public void escape() {
 
     }
+
+    public void draw(Graphics g2) {
+
+        g2.drawImage(testImage, locX * gameMap.tileSize, locY * gameMap.tileSize, gameMap.tileSize, gameMap.tileSize, null);
+    }
+
+}
 

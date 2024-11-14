@@ -14,9 +14,13 @@ public class GameManager implements Drawable {
     GameMap gameMap;
     Coin coin = new Coin();
     BigCoin bigCoin = new BigCoin();
-    int score = 0;
+
     Queue<Ghost> chamber;
-    int chamberTimer = 0;
+    private int chamberTimer = 0;
+    public int score = 0;
+    int level = 1;
+    private int escapeTimer = 0;
+    private boolean escapeMode = false;
 
     public GameManager(Player player, GameMap gameMap, Ghost[] ghosts) {
         this.player = player;
@@ -29,16 +33,49 @@ public class GameManager implements Drawable {
     }
 
     public void update() {
-        updateScore();
-        if (!chamber.isEmpty()) {
-            chamberTimer++;
-            if (chamberTimer > 160) {
-                releaseGhost();
-                chamberTimer=0;
-            }
+        if (gameIsOver()) {
+            restart();
         }
+        updateEscape();
+        updateScore();
+        releaseGhost();
 
     }
+
+    private void restart() {
+        player.lives--;
+        loadMap();
+        for (Ghost ghost : ghosts) {
+            ghost.setDefaultValues();
+        }
+        player.setDefaultValues();
+        chamber.clear();
+        chamber.addAll(Arrays.asList(ghosts));
+
+    }
+    public void updateEscape (){
+        if (escapeMode) {
+            if (escapeTimer < 500 / level) {
+                escapeTimer++;
+            } else {
+                escapeMode = false;
+                for (Ghost ghost : ghosts) {
+                    ghost.chaseable = true;
+                }
+                escapeTimer = 0;
+            }
+        }
+    }
+
+    private boolean gameIsOver() {
+        for (Ghost ghost : ghosts) {
+            if (player.locX == ghost.locX && player.locY == ghost.locY && ghost.chaseable) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private void loadMap() {
         for (int i = 0; i < gameMap.mapLength; i++) {
@@ -54,6 +91,7 @@ public class GameManager implements Drawable {
                         ghost.locX = j;
                         ghost.locY = i;
 
+
                     }
                 }
             }
@@ -63,10 +101,18 @@ public class GameManager implements Drawable {
     }
 
     private void releaseGhost() {
-        Ghost ghost= chamber.remove();
-        ghost.locX=ghost.startX;
-        ghost.locY=ghost.startY-2;
+        if (!chamber.isEmpty()) {
+            chamberTimer++;
+            if (chamberTimer > 160) {
+                Ghost ghost = chamber.remove();
+                ghost.locX = ghost.startX;
+                ghost.locY = ghost.startY - 2;
+                chamberTimer = 0;
+            }
+        }
+
     }
+
 
     private void updateScore() {
         Food food = foodMap[player.locY][player.locX];
@@ -79,6 +125,7 @@ public class GameManager implements Drawable {
             for (Ghost ghost : ghosts) {
                 ghost.chaseable = false;
             }
+            escapeMode = true;
         }
     }
 

@@ -22,6 +22,7 @@ public class GameControl implements Runnable {
     JFrame window = new JFrame();
 
 
+
     public GameControl() {
     }
 
@@ -35,9 +36,7 @@ public class GameControl implements Runnable {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
     }
-
-    public void update() {
-
+   private String receiveKeyInput(){
         String keyInput ;
         switch (keyHandler.code) {
             case KeyEvent.VK_W:
@@ -55,7 +54,13 @@ public class GameControl implements Runnable {
             default:
                 keyInput ="";
         }
-        player.update(keyInput);
+        return keyInput;
+    }
+
+    public void update() {
+
+
+        player.update(receiveKeyInput());
         gameManager.update();
 
     }
