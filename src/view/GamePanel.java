@@ -38,8 +38,13 @@ public class GamePanel extends JPanel {
         gameMap.draw(g2);
         player.draw(g2);
         gameManager.draw(g2);
+
         for (Ghost ghost : ghosts)
             ghost.draw(g2);
+        g2.setColor(Color.white);
+        g2.setFont(new Font("Arial",Font.BOLD,40));
+        g2.drawString("SCORE: "+gameManager.score,tileSize*26,tileSize*5);
+        g2.drawString("LIVES: "+ player.lives,tileSize*26,tileSize*10);
         g2.dispose();
     }
 

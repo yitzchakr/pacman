@@ -14,7 +14,7 @@ public class Player extends Entity {
     private int pictureCounter = 0;
     private boolean switchPicture;
    private int spriteCounter = 0;
-   int lives;
+   public int lives;
    int startX;
    int startY;
 

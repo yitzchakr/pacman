@@ -71,6 +71,9 @@ public class GameManager implements Drawable {
         for (Ghost ghost : ghosts) {
             if (player.locX == ghost.locX && player.locY == ghost.locY && ghost.chaseable) {
                 return true;
+            }else if (player.locX == ghost.locX && player.locY == ghost.locY ){
+                ghost.setDefaultValues();
+                chamber.add(ghost);
             }
         }
         return false;
