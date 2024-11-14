@@ -5,7 +5,7 @@ import java.awt.*;
 import java.io.IOException;
 
 public class Player extends Entity {
-    String direction = "up";
+    String direction = "down";
     String desiredDirection = "";
     GameMap gameMap;
     final int playerHeight = 32;

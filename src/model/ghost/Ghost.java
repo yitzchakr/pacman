@@ -8,12 +8,15 @@ import java.awt.*;
 
 public abstract class Ghost extends Entity implements Drawable {
     GameMap gameMap;
+    public  int startX;
+    public int startY;
     public boolean chaseable = true;
     public int escapeTimer = 0;
     public int scatterTimer;
 
     public Ghost(GameMap gameMap) {
         this.gameMap = gameMap;
+
     }
 
     public void update() {

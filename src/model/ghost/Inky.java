@@ -5,12 +5,11 @@ import model.GameMap;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class Blinky extends Ghost{
-
-    public Blinky( GameMap gameMap){
+public class Inky extends Ghost{
+    public Inky(GameMap gameMap) {
         super(gameMap);
         try {
-            testImage = ImageIO.read(getClass().getResourceAsStream("/resources/ghosts/blinky.png"));
+            testImage = ImageIO.read(getClass().getResourceAsStream("/resources/ghosts/inky.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -20,5 +19,4 @@ public class Blinky extends Ghost{
     public void chase() {
 
     }
-
 }
