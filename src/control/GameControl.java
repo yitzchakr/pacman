@@ -15,7 +15,7 @@ public class GameControl implements Runnable {
     GameMap gameMap = new GameMap();
     Player player = new Player(gameMap);
     Thread gameThread;
-    GhostFactory ghostFactory = new GhostFactory(gameMap);
+    GhostFactory ghostFactory = new GhostFactory(gameMap , player);
     Ghost[]ghosts = ghostFactory.createGhosts();
     GameManager gameManager = new GameManager(player,gameMap,ghosts);
     GamePanel gamePanel = new GamePanel(player,gameMap,gameManager,ghosts);
@@ -76,7 +76,7 @@ public class GameControl implements Runnable {
             update();
             gamePanel.repaint();
             try {
-                Thread.sleep(16);
+                Thread.sleep(19);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

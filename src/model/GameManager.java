@@ -18,9 +18,8 @@ public class GameManager implements Drawable {
     Queue<Ghost> chamber;
     private int chamberTimer = 0;
     public int score = 0;
-    int level = 1;
-    private int escapeTimer = 0;
-    private boolean escapeMode = false;
+
+
 
     public GameManager(Player player, GameMap gameMap, Ghost[] ghosts) {
         this.player = player;
@@ -33,18 +32,20 @@ public class GameManager implements Drawable {
     }
 
     public void update() {
-        if (gameIsOver()) {
-            restart();
+        if (pacmanIsEaten()) {
+            restartLevel();
         }
-        updateEscape();
+
         updateScore();
         releaseGhost();
+        for (Ghost ghost: ghosts){
+            ghost.update();
+        }
 
     }
 
-    private void restart() {
+    private void restartLevel() {
         player.lives--;
-        loadMap();
         for (Ghost ghost : ghosts) {
             ghost.setDefaultValues();
         }
@@ -53,25 +54,13 @@ public class GameManager implements Drawable {
         chamber.addAll(Arrays.asList(ghosts));
 
     }
-    public void updateEscape (){
-        if (escapeMode) {
-            if (escapeTimer < 500 / level) {
-                escapeTimer++;
-            } else {
-                escapeMode = false;
-                for (Ghost ghost : ghosts) {
-                    ghost.chaseable = true;
-                }
-                escapeTimer = 0;
-            }
-        }
-    }
 
-    private boolean gameIsOver() {
+    private boolean pacmanIsEaten() {
         for (Ghost ghost : ghosts) {
-            if (player.locX == ghost.locX && player.locY == ghost.locY && ghost.chaseable) {
+            if (player.locX == ghost.locX && player.locY == ghost.locY && ghost.chasable) {
                 return true;
             }else if (player.locX == ghost.locX && player.locY == ghost.locY ){
+                score+=200;
                 ghost.setDefaultValues();
                 chamber.add(ghost);
             }
@@ -93,8 +82,6 @@ public class GameManager implements Drawable {
                         ghost.startY = i;
                         ghost.locX = j;
                         ghost.locY = i;
-
-
                     }
                 }
             }
@@ -106,8 +93,9 @@ public class GameManager implements Drawable {
     private void releaseGhost() {
         if (!chamber.isEmpty()) {
             chamberTimer++;
-            if (chamberTimer > 160) {
+            if (chamberTimer > 100) {
                 Ghost ghost = chamber.remove();
+                ghost.scatterTimer=0;
                 ghost.locX = ghost.startX;
                 ghost.locY = ghost.startY - 2;
                 chamberTimer = 0;
@@ -126,10 +114,23 @@ public class GameManager implements Drawable {
             foodMap[player.locY][player.locX] = null;
             score += bigCoin.value;
             for (Ghost ghost : ghosts) {
-                ghost.chaseable = false;
+                if (!chamber.contains(ghost)) {
+                    ghost.chasable = false;
+                    reverseDirection(ghost);
+                }
             }
-            escapeMode = true;
+
         }
+    }
+
+    private void reverseDirection(Ghost ghost) {
+        if (ghost.locY> ghost.lastY)
+            ghost.lastY+=2;
+        else if (ghost.locY< ghost.lastY)
+            ghost.lastY-=2;
+        else if (ghost.locX > ghost.lastX)
+            ghost.lastX +=2;
+        else ghost.lastX -=2;
     }
 
 
@@ -139,10 +140,8 @@ public class GameManager implements Drawable {
         for (int i = 0; i < foodMap.length; i++) {
             for (int j = 0; j < foodMap[0].length; j++) {
                 Food food = foodMap[i][j];
-                if (food != null && food.getClass() == Coin.class)
-                    g2.drawImage(coin.image, j * gameMap.tileSize, i * gameMap.tileSize, null);
-                if (food != null && food.getClass() == BigCoin.class)
-                    g2.drawImage(bigCoin.image, j * gameMap.tileSize, i * gameMap.tileSize, null);
+                    if (food!= null)
+                    g2.drawImage(food.image, j * gameMap.tileSize, i * gameMap.tileSize, null);
 
             }
         }

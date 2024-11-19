@@ -17,6 +17,6 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        code =-1;
+        code = e.getKeyCode();
     }
 }

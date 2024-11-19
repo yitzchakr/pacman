@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Player extends Entity {
      private GameMap gameMap;
-     private String direction = "down";
+     public String direction = "down";
 
     final int playerHeight = 32;
     final int playerWidth = 32;
