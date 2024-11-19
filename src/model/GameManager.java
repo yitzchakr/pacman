@@ -18,6 +18,8 @@ public class GameManager implements Drawable {
     Queue<Ghost> chamber;
     private int chamberTimer = 0;
     public int score = 0;
+    public int coins = 0;
+    int initialCoins;
 
 
 
@@ -29,10 +31,17 @@ public class GameManager implements Drawable {
         chamber = new LinkedList<>();
         chamber.addAll(Arrays.asList(ghosts));
         loadMap();
+
     }
 
     public void update() {
+        if (coins==0){
+            loadMap();
+            levelUp();
+            restartLevel();
+        }
         if (pacmanIsEaten()) {
+            player.lives--;
             restartLevel();
         }
 
@@ -44,8 +53,16 @@ public class GameManager implements Drawable {
 
     }
 
+    private void levelUp() {
+        player.lives++;
+        for (Ghost ghost: ghosts){
+            if (ghost.level <=3 )
+                ghost.level++;
+        }
+    }
+
     private void restartLevel() {
-        player.lives--;
+
         for (Ghost ghost : ghosts) {
             ghost.setDefaultValues();
         }
@@ -72,10 +89,14 @@ public class GameManager implements Drawable {
     private void loadMap() {
         for (int i = 0; i < gameMap.mapLength; i++) {
             for (int j = 0; j < gameMap.mapWidth; j++) {
-                if (gameMap.map[i][j] == '1')
+                if (gameMap.map[i][j] == '1') {
                     foodMap[i][j] = new Coin();
-                else if (gameMap.map[i][j] == '2')
+                    coins++;
+                }
+                else if (gameMap.map[i][j] == '2') {
                     foodMap[i][j] = new BigCoin();
+                    coins++;
+                }
                 else if (gameMap.map[i][j] == '4') {
                     for (Ghost ghost : ghosts) {
                         ghost.startX = j;
@@ -85,9 +106,8 @@ public class GameManager implements Drawable {
                     }
                 }
             }
-
         }
-
+        initialCoins=coins;
     }
 
     private void releaseGhost() {
@@ -110,9 +130,11 @@ public class GameManager implements Drawable {
         if (food != null && food.getClass() == Coin.class) {
             foodMap[player.locY][player.locX] = null;
             score += coin.value;
+            coins--;
         } else if (food != null && food.getClass() == BigCoin.class) {
             foodMap[player.locY][player.locX] = null;
             score += bigCoin.value;
+            coins--;
             for (Ghost ghost : ghosts) {
                 if (!chamber.contains(ghost)) {
                     ghost.chasable = false;
