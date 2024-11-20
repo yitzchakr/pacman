@@ -19,8 +19,8 @@ public abstract class Ghost extends Entity implements Drawable {
     public int escapeTimer = 0;
     public int scatterTimer;
     int[] scatterTarget;
-    public int lastX;
-    public int lastY;
+    public int lastX=10;
+    public int lastY=13;
     int moveCounter = 0;
 
     Image escape;
@@ -132,15 +132,18 @@ public abstract class Ghost extends Entity implements Drawable {
         Random r = new Random();
         ArrayList<int[]> moves = getAvailableMoves();
         int direction = r.nextInt(moves.size());
-        int[] move = moves.get(direction);
-        move(move);
+        int[] nextMove = moves.get(direction);
+        move(nextMove);
+    }
+    Point getOffset(){
+     return new Point(lastX-locX,lastY-locY);
     }
 
     public void draw(Graphics g2) {
         if (chasable)
-            g2.drawImage(testImage, locX * gameMap.tileSize, locY * gameMap.tileSize, gameMap.tileSize, gameMap.tileSize, null);
+            g2.drawImage(testImage,((locX * gameMap.tileSize))+ (32-moveCounter)*(getOffset().x), ((locY* gameMap.tileSize)+(32-moveCounter)*getOffset().y), gameMap.tileSize, gameMap.tileSize, null);
         else
-            g2.drawImage(escape, locX * gameMap.tileSize, locY * gameMap.tileSize, gameMap.tileSize, gameMap.tileSize, null);
+            g2.drawImage(escape, ( (32-moveCounter)*(getOffset().x)+(locX * gameMap.tileSize)), ((32-moveCounter)*getOffset().y)+(locY* gameMap.tileSize), gameMap.tileSize, gameMap.tileSize, null);;
     }
 
 }

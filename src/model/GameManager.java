@@ -4,9 +4,7 @@ import model.fruit.Fruit;
 import model.ghost.Ghost;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class GameManager implements Drawable {
     Food[][] foodMap;
@@ -48,12 +46,7 @@ public class GameManager implements Drawable {
             restartLevel();
             return;
         }
-        if (pacmanIsEaten()) {
-            player.lives--;
-            fruitManager.clearFruit();
-            restartLevel();
-            return;
-        }
+        handleEncounter();
         updateScore();
         fruitManager.updateFruit( level);
         releaseGhost();
@@ -61,6 +54,35 @@ public class GameManager implements Drawable {
             ghost.update(level);
         }
 
+    }
+    private void handleEncounter() {
+        Timer timer = new Timer();
+        for (Ghost ghost : ghosts) {
+            if (ghost.locX == player.locX && ghost.locY == player.locY) {
+                if (ghost.chasable) {
+
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            player.lives--;
+                            fruitManager.clearFruit();
+                            restartLevel();
+                        }
+                    }, 150);
+                    return;
+                }else {
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            score += 200;
+                            ghost.setDefaultValues();
+                            chamber.add(ghost);
+
+                        }
+                    },150);
+                }
+            }
+        }
     }
 
 
@@ -81,18 +103,6 @@ public class GameManager implements Drawable {
 
     }
 
-    private boolean pacmanIsEaten() {
-        for (Ghost ghost : ghosts) {
-            if (player.locX == ghost.locX && player.locY == ghost.locY && ghost.chasable) {
-                return true;
-            } else if (player.locX == ghost.locX && player.locY == ghost.locY) {
-                score += 200;
-                ghost.setDefaultValues();
-                chamber.add(ghost);
-            }
-        }
-        return false;
-    }
 
 
     private void loadMap() {
@@ -175,7 +185,7 @@ public class GameManager implements Drawable {
             for (int j = 0; j < foodMap[0].length; j++) {
                 Food food = foodMap[i][j];
                 if (food != null)
-                    g2.drawImage(food.image, j * gameMap.tileSize, i * gameMap.tileSize, null);
+                    g2.drawImage(food.image, j * gameMap.tileSize, i * gameMap.tileSize,gameMap.tileSize,gameMap.tileSize, null);
 
             }
         }

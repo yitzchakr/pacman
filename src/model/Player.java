@@ -10,7 +10,7 @@ public class Player extends Entity {
 
     final int playerHeight = 32;
     final int playerWidth = 32;
-   private int pixelCounter = 0;
+  public int pixelCounter = 0;
     private int pictureCounter = 0;
     private boolean switchPicture;
    private int spriteCounter = 0;

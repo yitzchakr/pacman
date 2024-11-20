@@ -31,6 +31,7 @@ public class FruitManager {
 
     void initializeFruits(){
         fruitTimer=0;
+        fruits.clear();
         fruits.add(new Cherry());
         fruits.add(new Strawberry());
         fruits.add(new Apple());
