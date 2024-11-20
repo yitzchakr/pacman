@@ -39,16 +39,16 @@ public class GameControl implements Runnable {
    private String receiveKeyInput(){
         String keyInput ;
         switch (keyHandler.code) {
-            case KeyEvent.VK_W:
+            case KeyEvent.VK_UP:
                 keyInput = "up";
                 break;
-            case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
                 keyInput = "down";
                 break;
-            case KeyEvent.VK_A:
+            case KeyEvent.VK_LEFT:
                 keyInput = "left";
                 break;
-            case KeyEvent.VK_D:
+            case KeyEvent.VK_RIGHT:
                 keyInput = "right";
                 break;
             default:
@@ -76,7 +76,7 @@ public class GameControl implements Runnable {
             update();
             gamePanel.repaint();
             try {
-                Thread.sleep(19);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

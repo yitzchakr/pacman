@@ -22,7 +22,7 @@ public abstract class Ghost extends Entity implements Drawable {
     public int lastX;
     public int lastY;
     int moveCounter = 0;
-    public int level;
+
     Image escape;
 
     {
@@ -38,7 +38,6 @@ public abstract class Ghost extends Entity implements Drawable {
         this.gameMap = gameMap;
         this.player = player;
         speed = 4;
-        level =1;
         scatterTimer=0;
     }
 
@@ -52,7 +51,7 @@ public abstract class Ghost extends Entity implements Drawable {
         lastY = locY;
     }
 
-    public void update() {
+    public void update( int level) {
         moveCounter += speed;
         if (moveCounter < 32) {
             return;

@@ -1,5 +1,6 @@
 package model;
 
+import model.fruit.Fruit;
 import model.ghost.Ghost;
 
 import java.awt.*;
@@ -16,11 +17,13 @@ public class GameManager implements Drawable {
     BigCoin bigCoin = new BigCoin();
 
     Queue<Ghost> chamber;
+
     private int chamberTimer = 0;
     public int score = 0;
     public int coins = 0;
     int initialCoins;
-
+    public int level=1;
+    FruitManager fruitManager;
 
 
     public GameManager(Player player, GameMap gameMap, Ghost[] ghosts) {
@@ -32,33 +35,39 @@ public class GameManager implements Drawable {
         chamber.addAll(Arrays.asList(ghosts));
         loadMap();
 
+        fruitManager = new FruitManager(gameMap, foodMap);
+        fruitManager.initializeFruits();
+
     }
 
     public void update() {
-        if (coins==0){
+        if (coins == 0) {
             loadMap();
             levelUp();
+            fruitManager.initializeFruits();
             restartLevel();
+            return;
         }
         if (pacmanIsEaten()) {
             player.lives--;
+            fruitManager.clearFruit();
             restartLevel();
+            return;
         }
-
         updateScore();
+        fruitManager.updateFruit( level);
         releaseGhost();
-        for (Ghost ghost: ghosts){
-            ghost.update();
+        for (Ghost ghost : ghosts) {
+            ghost.update(level);
         }
 
     }
 
+
     private void levelUp() {
         player.lives++;
-        for (Ghost ghost: ghosts){
-            if (ghost.level <=3 )
-                ghost.level++;
-        }
+        if (level< 3)
+            level++;
     }
 
     private void restartLevel() {
@@ -76,8 +85,8 @@ public class GameManager implements Drawable {
         for (Ghost ghost : ghosts) {
             if (player.locX == ghost.locX && player.locY == ghost.locY && ghost.chasable) {
                 return true;
-            }else if (player.locX == ghost.locX && player.locY == ghost.locY ){
-                score+=200;
+            } else if (player.locX == ghost.locX && player.locY == ghost.locY) {
+                score += 200;
                 ghost.setDefaultValues();
                 chamber.add(ghost);
             }
@@ -92,12 +101,10 @@ public class GameManager implements Drawable {
                 if (gameMap.map[i][j] == '1') {
                     foodMap[i][j] = new Coin();
                     coins++;
-                }
-                else if (gameMap.map[i][j] == '2') {
+                } else if (gameMap.map[i][j] == '2') {
                     foodMap[i][j] = new BigCoin();
                     coins++;
-                }
-                else if (gameMap.map[i][j] == '4') {
+                } else if (gameMap.map[i][j] == '4') {
                     for (Ghost ghost : ghosts) {
                         ghost.startX = j;
                         ghost.startY = i;
@@ -107,7 +114,7 @@ public class GameManager implements Drawable {
                 }
             }
         }
-        initialCoins=coins;
+        initialCoins = coins;
     }
 
     private void releaseGhost() {
@@ -115,7 +122,7 @@ public class GameManager implements Drawable {
             chamberTimer++;
             if (chamberTimer > 100) {
                 Ghost ghost = chamber.remove();
-                ghost.scatterTimer=0;
+                ghost.scatterTimer = 0;
                 ghost.locX = ghost.startX;
                 ghost.locY = ghost.startY - 2;
                 chamberTimer = 0;
@@ -127,32 +134,37 @@ public class GameManager implements Drawable {
 
     private void updateScore() {
         Food food = foodMap[player.locY][player.locX];
-        if (food != null && food.getClass() == Coin.class) {
+        if (food == null)
+            return;
+        if (food.getClass() == Coin.class) {
             foodMap[player.locY][player.locX] = null;
             score += coin.value;
             coins--;
-        } else if (food != null && food.getClass() == BigCoin.class) {
+        } else if (food.getClass() == BigCoin.class) {
             foodMap[player.locY][player.locX] = null;
             score += bigCoin.value;
             coins--;
             for (Ghost ghost : ghosts) {
-                if (!chamber.contains(ghost)) {
-                    ghost.chasable = false;
-                    reverseDirection(ghost);
-                }
-            }
+                ghost.chasable = false;
+                ghost.escapeTimer = 0;
+                reverseDirection(ghost);
 
+            }
+        } else if (food instanceof Fruit) {
+            foodMap[player.locY][player.locX] = null;
+            score += food.value;
+            fruitManager.cycleFruits(food);
         }
     }
 
     private void reverseDirection(Ghost ghost) {
-        if (ghost.locY> ghost.lastY)
-            ghost.lastY+=2;
-        else if (ghost.locY< ghost.lastY)
-            ghost.lastY-=2;
+        if (ghost.locY > ghost.lastY)
+            ghost.lastY += 2;
+        else if (ghost.locY < ghost.lastY)
+            ghost.lastY -= 2;
         else if (ghost.locX > ghost.lastX)
-            ghost.lastX +=2;
-        else ghost.lastX -=2;
+            ghost.lastX += 2;
+        else ghost.lastX -= 2;
     }
 
 
@@ -162,7 +174,7 @@ public class GameManager implements Drawable {
         for (int i = 0; i < foodMap.length; i++) {
             for (int j = 0; j < foodMap[0].length; j++) {
                 Food food = foodMap[i][j];
-                    if (food!= null)
+                if (food != null)
                     g2.drawImage(food.image, j * gameMap.tileSize, i * gameMap.tileSize, null);
 
             }
