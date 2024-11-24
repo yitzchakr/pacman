@@ -19,8 +19,8 @@ public abstract class Ghost extends Entity implements Drawable {
     public int escapeTimer = 0;
     public int scatterTimer;
     int[] scatterTarget;
-    public int lastX=10;
-    public int lastY=13;
+    public int lastX=12;
+    public int lastY=10;
     int moveCounter = 0;
 
     Image escape;

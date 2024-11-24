@@ -2,11 +2,13 @@ package view;
 
 import model.GameManager;
 import model.GameMap;
+import model.LeaderBoard;
 import model.Player;
 import model.ghost.Ghost;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class GamePanel extends JPanel {
 
@@ -20,8 +22,9 @@ public class GamePanel extends JPanel {
     Player player;
     GameManager gameManager;
     Ghost[]ghosts;
+    LeaderBoard leaderBoard ;
 
-    public GamePanel(Player player, GameMap gameMap, GameManager gameManager, Ghost[]ghosts) {
+    public GamePanel(Player player, GameMap gameMap, GameManager gameManager, Ghost[]ghosts,LeaderBoard leaderBoard) {
         this.setPreferredSize(new Dimension(screeWidth, screenLength));
         this.setDoubleBuffered(true);
         this.setBackground(Color.black);
@@ -31,6 +34,7 @@ public class GamePanel extends JPanel {
         this.player = player;
         this.gameManager= gameManager;
         this.ghosts = ghosts;
+        this.leaderBoard = leaderBoard;
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -46,9 +50,17 @@ public class GamePanel extends JPanel {
         g2.drawString("SCORE: "+gameManager.score,tileSize*26,tileSize*5);
         g2.drawString("LIVES: "+ player.lives,tileSize*26,tileSize*10);
         g2.drawString(" COINS LEFT: " + gameManager.coins,tileSize*26,tileSize*15);
+
+            g2.drawString("HIGH SCORE: "+leaderBoard.highScore,tileSize*26, tileSize);
+
         g2.dispose();
     }
 
-
+    public void setGameObjects(Player player, GameMap gameMap, GameManager gameManager, Ghost[] ghosts) {
+        this.player = player;
+        this.gameMap = gameMap;
+        this.gameManager = gameManager;
+        this.ghosts = ghosts;
+    }
 
 }

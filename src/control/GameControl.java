@@ -2,42 +2,87 @@ package control;
 
 import model.GameManager;
 import model.GameMap;
+import model.LeaderBoard;
 import model.Player;
 import model.ghost.Ghost;
 import model.ghost.GhostFactory;
 import view.GamePanel;
+import view.StartMenuPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class GameControl implements Runnable {
-    KeyHandler keyHandler = new KeyHandler();
-    GameMap gameMap = new GameMap();
-    Player player = new Player(gameMap);
-    Thread gameThread;
-    GhostFactory ghostFactory = new GhostFactory(gameMap , player);
-    Ghost[]ghosts = ghostFactory.createGhosts();
-    GameManager gameManager = new GameManager(player,gameMap,ghosts);
-    GamePanel gamePanel = new GamePanel(player,gameMap,gameManager,ghosts);
-    JFrame window = new JFrame();
 
+
+
+public class GameControl implements Runnable {
+    JTextField textField;
+    KeyHandler keyHandler = new KeyHandler();
+    GameMap gameMap;
+    Player player;
+    Thread gameThread;
+    GhostFactory ghostFactory;
+    Ghost[] ghosts;
+    GameManager gameManager;
+    GamePanel gamePanel;
+    JFrame window = new JFrame();
+    LeaderBoard leaderBoard;
+    CardLayout cardLayout = new CardLayout();
+    JPanel mainPanel = new JPanel(cardLayout);
+    private boolean isRunning;
 
 
     public GameControl() {
+        init();
+    }
+
+    private void init() {
+        keyHandler = new KeyHandler();
+        gameMap = new GameMap();
+        player = new Player(gameMap);
+        ghostFactory = new GhostFactory(gameMap, player);
+        ghosts = ghostFactory.createGhosts();
+        gameManager = new GameManager(player, gameMap, ghosts);
+        leaderBoard = new LeaderBoard(gameManager);
+        gamePanel = new GamePanel(player, gameMap, gameManager, ghosts, leaderBoard);
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocusInWindow();
+        gamePanel.addKeyListener(keyHandler);
+        textField = new JTextField();
     }
 
     public void setWindow() {
+        StartMenuPanel startMenu = new StartMenuPanel(
+                e -> startGame()
+
+        );
+        mainPanel.add(startMenu, "StartMenu");
+        mainPanel.add(gamePanel, "game");
+
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(true);
+        window.setResizable(false);
         window.setTitle("Pacman");
-        gamePanel.addKeyListener(keyHandler);
-        window.add(gamePanel);
+
+        window.add(mainPanel);
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocusInWindow();
+        gamePanel.addKeyListener(keyHandler);
+        cardLayout.show(mainPanel, "StartMenu");
     }
-   private String receiveKeyInput(){
-        String keyInput ;
+
+    private void startGame() {
+        resetGame();
+        cardLayout.show(mainPanel, "game");
+        gamePanel.requestFocusInWindow();
+        startThread();
+    }
+
+    private String receiveKeyInput() {
+        String keyInput;
         switch (keyHandler.code) {
             case KeyEvent.VK_UP:
                 keyInput = "up";
@@ -52,7 +97,7 @@ public class GameControl implements Runnable {
                 keyInput = "right";
                 break;
             default:
-                keyInput ="";
+                keyInput = "";
         }
         return keyInput;
     }
@@ -66,14 +111,25 @@ public class GameControl implements Runnable {
     }
 
     public void startThread() {
+
         gameThread = new Thread(this);
         gameThread.start();
+
     }
+
+
+
 
     @Override
     public void run() {
-        while (true) {
+        isRunning = true;
+        while (isRunning) {
             update();
+            if (gameManager.isOver()) {
+              updateHighScores();
+                cardLayout.show(mainPanel, "StartMenu");
+                isRunning = false;
+            }
             gamePanel.repaint();
             try {
                 Thread.sleep(20);
@@ -81,5 +137,29 @@ public class GameControl implements Runnable {
                 throw new RuntimeException(e);
             }
         }
+    }
+    private void updateHighScores (){
+        if (leaderBoard.isHighScore()) {
+            String playerName = JOptionPane.showInputDialog(window,
+                    "Game Over! \n Congratulations you have a high score \n Enter your name:",
+                    "Game Over", JOptionPane.PLAIN_MESSAGE);
+            leaderBoard.updateScores(playerName);
+            JOptionPane.showMessageDialog(window,
+                    "Current High Scores:\n" + leaderBoard.getHighScores(),
+                    "High Scores", JOptionPane.INFORMATION_MESSAGE);
+        }else {
+            JOptionPane.showMessageDialog(window,
+                    "Game Is Over", "GameOver", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(window,
+                    "Current High Scores:\n" + leaderBoard.getHighScores(),
+                    "High Scores", JOptionPane.INFORMATION_MESSAGE);
+
+        }
+    }
+
+    private void resetGame() {
+        init();
+
+        mainPanel.add(gamePanel, "game");
     }
 }
