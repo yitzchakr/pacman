@@ -8,7 +8,6 @@ import model.ghost.Ghost;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class GamePanel extends JPanel {
 

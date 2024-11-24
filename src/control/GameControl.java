@@ -14,10 +14,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 
-
-
 public class GameControl implements Runnable {
-    JTextField textField;
     KeyHandler keyHandler = new KeyHandler();
     GameMap gameMap;
     Player player;
@@ -34,10 +31,10 @@ public class GameControl implements Runnable {
 
 
     public GameControl() {
-        init();
+        initializeGame();
     }
 
-    private void init() {
+    private void initializeGame() {
         keyHandler = new KeyHandler();
         gameMap = new GameMap();
         player = new Player(gameMap);
@@ -49,7 +46,6 @@ public class GameControl implements Runnable {
         gamePanel.setFocusable(true);
         gamePanel.requestFocusInWindow();
         gamePanel.addKeyListener(keyHandler);
-        textField = new JTextField();
     }
 
     public void setWindow() {
@@ -63,7 +59,6 @@ public class GameControl implements Runnable {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Pacman");
-
         window.add(mainPanel);
         window.pack();
         window.setLocationRelativeTo(null);
@@ -72,11 +67,13 @@ public class GameControl implements Runnable {
         gamePanel.requestFocusInWindow();
         gamePanel.addKeyListener(keyHandler);
         cardLayout.show(mainPanel, "StartMenu");
+
     }
 
     private void startGame() {
         resetGame();
         cardLayout.show(mainPanel, "game");
+        window.pack();
         gamePanel.requestFocusInWindow();
         startThread();
     }
@@ -104,10 +101,8 @@ public class GameControl implements Runnable {
 
     public void update() {
 
-
         player.update(receiveKeyInput());
         gameManager.update();
-
     }
 
     public void startThread() {
@@ -117,17 +112,15 @@ public class GameControl implements Runnable {
 
     }
 
-
-
-
     @Override
     public void run() {
         isRunning = true;
         while (isRunning) {
             update();
             if (gameManager.isOver()) {
-              updateHighScores();
+                updateHighScores();
                 cardLayout.show(mainPanel, "StartMenu");
+                window.pack();
                 isRunning = false;
             }
             gamePanel.repaint();
@@ -138,7 +131,8 @@ public class GameControl implements Runnable {
             }
         }
     }
-    private void updateHighScores (){
+
+    private void updateHighScores() {
         if (leaderBoard.isHighScore()) {
             String playerName = JOptionPane.showInputDialog(window,
                     "Game Over! \n Congratulations you have a high score \n Enter your name:",
@@ -147,7 +141,7 @@ public class GameControl implements Runnable {
             JOptionPane.showMessageDialog(window,
                     "Current High Scores:\n" + leaderBoard.getHighScores(),
                     "High Scores", JOptionPane.INFORMATION_MESSAGE);
-        }else {
+        } else {
             JOptionPane.showMessageDialog(window,
                     "Game Is Over", "GameOver", JOptionPane.INFORMATION_MESSAGE);
             JOptionPane.showMessageDialog(window,
@@ -158,8 +152,7 @@ public class GameControl implements Runnable {
     }
 
     private void resetGame() {
-        init();
-
+        initializeGame();
         mainPanel.add(gamePanel, "game");
     }
 }
