@@ -64,7 +64,7 @@ public abstract class Ghost extends Entity implements Drawable {
             escapeTimer++;
             speed = 2;
             escape();
-            if (escapeTimer >= 50 -(level*10)) {
+            if (escapeTimer >= 40 -(level*10)) {
                 chasable = true;
                 escapeTimer = 0;
                 speed = 4;
