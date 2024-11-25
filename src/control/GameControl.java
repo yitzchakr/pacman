@@ -25,9 +25,11 @@ public class GameControl implements Runnable {
     GamePanel gamePanel;
     JFrame window = new JFrame();
     LeaderBoard leaderBoard;
+    GameRecorder gameRecorder;
     CardLayout cardLayout = new CardLayout();
     JPanel mainPanel = new JPanel(cardLayout);
     private boolean isRunning;
+    private boolean isRecording = true;
 
 
     public GameControl() {
@@ -50,12 +52,11 @@ public class GameControl implements Runnable {
 
     public void setWindow() {
         StartMenuPanel startMenu = new StartMenuPanel(
-                e -> startGame()
+                e -> startGame(),e -> showHighScores()
 
         );
         mainPanel.add(startMenu, "StartMenu");
         mainPanel.add(gamePanel, "game");
-
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Pacman");
@@ -68,12 +69,22 @@ public class GameControl implements Runnable {
         gamePanel.addKeyListener(keyHandler);
         cardLayout.show(mainPanel, "StartMenu");
 
+
+    }
+
+    private void showHighScores() {
+
+        JOptionPane.showMessageDialog(window,
+                "High Scores:\n" + leaderBoard.getHighScores(),
+                "High Scores", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void startGame() {
         resetGame();
+        if (isRecording){
+            gameRecorder= new GameRecorder(gameMap,player,ghosts,gameManager);
+        }
         cardLayout.show(mainPanel, "game");
-        window.pack();
         gamePanel.requestFocusInWindow();
         startThread();
     }
@@ -103,6 +114,9 @@ public class GameControl implements Runnable {
 
         player.update(receiveKeyInput());
         gameManager.update();
+        if (isRecording && player.pixelCounter==0){
+            gameRecorder.record();
+        }
     }
 
     public void startThread() {
@@ -138,16 +152,12 @@ public class GameControl implements Runnable {
                     "Game Over! \n Congratulations you have a high score \n Enter your name:",
                     "Game Over", JOptionPane.PLAIN_MESSAGE);
             leaderBoard.updateScores(playerName);
-            JOptionPane.showMessageDialog(window,
-                    "Current High Scores:\n" + leaderBoard.getHighScores(),
-                    "High Scores", JOptionPane.INFORMATION_MESSAGE);
+            showHighScores();
+
         } else {
             JOptionPane.showMessageDialog(window,
                     "Game Is Over", "GameOver", JOptionPane.INFORMATION_MESSAGE);
-            JOptionPane.showMessageDialog(window,
-                    "Current High Scores:\n" + leaderBoard.getHighScores(),
-                    "High Scores", JOptionPane.INFORMATION_MESSAGE);
-
+            showHighScores();
         }
     }
 

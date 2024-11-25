@@ -45,12 +45,12 @@ public class GamePanel extends JPanel {
         for (Ghost ghost : ghosts)
             ghost.draw(g2);
         g2.setColor(Color.white);
-        g2.setFont(new Font("Arial",Font.BOLD,30));
-        g2.drawString("SCORE: "+gameManager.score,tileSize*26,tileSize*5);
-        g2.drawString("LIVES: "+ player.lives,tileSize*26,tileSize*10);
-        g2.drawString(" COINS LEFT: " + gameManager.coins,tileSize*26,tileSize*15);
+        g2.setFont(new Font("Arial",Font.BOLD,28));
+        g2.drawString("SCORE: "+gameManager.score,tileSize*25,tileSize*5);
+        g2.drawString("LIVES: "+ player.lives,tileSize*25,tileSize*10);
+        g2.drawString(" COINS LEFT: " + gameManager.coins,tileSize*25,tileSize*15);
 
-            g2.drawString("HIGH SCORE: "+leaderBoard.highScore,tileSize*26, tileSize);
+            g2.drawString("HIGH SCORE: "+leaderBoard.highScore,tileSize*25, tileSize);
 
         g2.dispose();
     }

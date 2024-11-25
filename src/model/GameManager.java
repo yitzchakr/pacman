@@ -39,6 +39,10 @@ public class GameManager implements Drawable {
 
     }
 
+    public Food[][] getFoodMap() {
+        return foodMap;
+    }
+
     public void update() {
         if (coins == 0) {
             loadMap();

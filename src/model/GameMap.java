@@ -14,11 +14,18 @@ public class GameMap implements Drawable {
     public int tileSize =32;
     int playerX;
     int playerY;
+     public Image image;
 
     public char [][] map ;
     public GameMap() {
 
         map = new char[mapLength][mapWidth];
+
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream("/resources/wall.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         loadMap("src/resources/map01.txt");
     }
     public void loadMap( String filePath) {
@@ -48,12 +55,7 @@ public class GameMap implements Drawable {
 
     @Override
     public void draw(Graphics g2) {
-        Image image;
-        try {
-            image = ImageIO.read(getClass().getResourceAsStream("/resources/wall.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
         int posX=0;
         int posY=0;
         for (int i = 0; i < mapLength; i++) {

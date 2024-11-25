@@ -23,7 +23,7 @@ public abstract class Ghost extends Entity implements Drawable {
     public int lastY=10;
     int moveCounter = 0;
 
-    Image escape;
+   public Image escape;
 
     {
         try {
