@@ -55,11 +55,5 @@ public class GamePanel extends JPanel {
         g2.dispose();
     }
 
-    public void setGameObjects(Player player, GameMap gameMap, GameManager gameManager, Ghost[] ghosts) {
-        this.player = player;
-        this.gameMap = gameMap;
-        this.gameManager = gameManager;
-        this.ghosts = ghosts;
-    }
 
 }

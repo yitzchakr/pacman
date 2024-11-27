@@ -7,6 +7,7 @@ import model.Player;
 import model.ghost.Ghost;
 import model.ghost.GhostFactory;
 import view.GamePanel;
+import view.RecordPanel;
 import view.StartMenuPanel;
 
 import javax.swing.*;
@@ -19,12 +20,14 @@ public class GameControl implements Runnable {
     GameMap gameMap;
     Player player;
     Thread gameThread;
+    Thread recordThread;
     GhostFactory ghostFactory;
     Ghost[] ghosts;
     GameManager gameManager;
     GamePanel gamePanel;
     JFrame window = new JFrame();
     LeaderBoard leaderBoard;
+    RecordPanel recordPanel;
     GameRecorder gameRecorder;
     CardLayout cardLayout = new CardLayout();
     JPanel mainPanel = new JPanel(cardLayout);
@@ -45,6 +48,8 @@ public class GameControl implements Runnable {
         gameManager = new GameManager(player, gameMap, ghosts);
         leaderBoard = new LeaderBoard(gameManager);
         gamePanel = new GamePanel(player, gameMap, gameManager, ghosts, leaderBoard);
+        gameRecorder = new GameRecorder(gameMap,player,ghosts,gameManager);
+
         gamePanel.setFocusable(true);
         gamePanel.requestFocusInWindow();
         gamePanel.addKeyListener(keyHandler);
@@ -52,9 +57,10 @@ public class GameControl implements Runnable {
 
     public void setWindow() {
         StartMenuPanel startMenu = new StartMenuPanel(
-                e -> startGame(),e -> showHighScores()
+                e -> startGame(),e -> showHighScores(),e -> playRecording()
 
         );
+
         mainPanel.add(startMenu, "StartMenu");
         mainPanel.add(gamePanel, "game");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,6 +78,34 @@ public class GameControl implements Runnable {
 
     }
 
+    private void playRecording() {
+        if (gameRecorder.recorder.isEmpty()){
+            JOptionPane.showMessageDialog(window,"No Recording Available");
+            return;
+        }
+        recordPanel= new RecordPanel(gameRecorder);
+        mainPanel.add(recordPanel,"record");
+        cardLayout.show(mainPanel, "record");
+
+        recordThread= new Thread(() -> {
+            while (!recordPanel.ended) {
+                recordPanel.repaint();
+
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            SwingUtilities.invokeLater(() -> {
+                cardLayout.show(mainPanel, "StartMenu");
+                window.pack();
+            });
+        });
+        recordThread.start();
+
+    }
+
     private void showHighScores() {
 
         JOptionPane.showMessageDialog(window,
@@ -81,9 +115,7 @@ public class GameControl implements Runnable {
 
     private void startGame() {
         resetGame();
-        if (isRecording){
-            gameRecorder= new GameRecorder(gameMap,player,ghosts,gameManager);
-        }
+
         cardLayout.show(mainPanel, "game");
         gamePanel.requestFocusInWindow();
         startThread();

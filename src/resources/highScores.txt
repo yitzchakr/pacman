@@ -1,3 +1,4 @@
+2630 yitzchak
 2500 test
 2356 bbbb
 1710 test
@@ -7,4 +8,3 @@
 1230 highscore
 1111 aaaa
 1100 yes
-1070 dlgg

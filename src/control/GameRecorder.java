@@ -13,13 +13,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class GameRecorder {
-    Queue<char[][]> recorder;
+     public Queue<char[][]> recorder;
 
     GameMap gameMap;
     Player player;
     Ghost [] ghosts;
     GameManager gameManager;
-    HashMap <Character, Image> imageMap ;
+   public HashMap <Character, Image> imageMap ;
 
     public GameRecorder(GameMap gameMap, Player player, Ghost[] ghosts, GameManager gameManager) {
         this.gameMap = gameMap;
@@ -27,6 +27,7 @@ public class GameRecorder {
         this.ghosts = ghosts;
         this.gameManager = gameManager;
         recorder= new LinkedList<>();
+        loadHashMap();
     }
     public void loadHashMap(){
         Coin a = new Coin(); BigCoin b = new BigCoin(); Cherry c = new Cherry();Strawberry d = new Strawberry();
