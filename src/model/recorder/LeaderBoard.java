@@ -1,18 +1,16 @@
-package model;
+package model.recorder;
+
+import model.GameManager;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class LeaderBoard {
     GameManager gameManager;
     Scanner scanner;
     BufferedWriter writer;
     public int highScore;
-    ArrayList <Integer>highScores;
-    HashMap<Integer,String>scoresMap;
+    ArrayList <Score>highScores;
 
 
 
@@ -24,21 +22,21 @@ public class LeaderBoard {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        loadSores();
-        highScore = highScores.getFirst();
+        loadScores();
+        highScore = highScores.getFirst().getPoints();
         scanner.close();
 
     }
-    private void loadSores(){
+    private void loadScores(){
 
         highScores = new ArrayList<>();
-        scoresMap = new HashMap<>();
+
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             int currentScore = Integer.parseInt(line.substring(0, line.indexOf(" ")));
             String currentName = line.substring(line.indexOf(" ") + 1);
-            scoresMap.put(currentScore, currentName);
-            highScores.add(currentScore);
+
+            highScores.add(new Score(currentScore,currentName));
 
         }
     }
@@ -47,17 +45,16 @@ public class LeaderBoard {
         int currentScore = gameManager.score;
 
 
-        scoresMap.put(currentScore, name);
-        highScores.add(currentScore);
-        highScores.sort(Collections.reverseOrder());
+        highScores.add(new Score(currentScore,name));
+        highScores.sort(Comparator.comparing((Score:: getPoints),Collections.reverseOrder()));
         if (highScores.size() > 10) {
             highScores.removeLast();
         }
 
         try {
             writer = new BufferedWriter(new FileWriter("src/resources/highScores.txt"));
-            for (int s : highScores) {
-                writer.write(s + " " + scoresMap.get(s));
+            for (Score s : highScores) {
+                writer.write(s.getPoints() + " " + s.getName());
                 writer.newLine();
             }
             writer.close();
@@ -69,14 +66,14 @@ public class LeaderBoard {
     }
 
     public boolean isHighScore() {
-        return highScores.size() < 10 || gameManager.score > highScores.getLast();
+        return highScores.size() < 10 || gameManager.score > highScores.getLast().getPoints();
     }
 
 
     public String getHighScores() {
             String info ="";
-        for (int score : highScores){
-            info=info.concat("\n"+score+" "+scoresMap.get(score));
+        for (Score score : highScores){
+            info=info.concat("\n"+score.getPoints()+" "+score.getName());
         }
         return info;
     }

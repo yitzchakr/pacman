@@ -6,6 +6,7 @@ import model.fruit.Cherry;
 import model.fruit.Orange;
 import model.fruit.Strawberry;
 import model.ghost.*;
+import model.recorder.RecordFrame;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -13,8 +14,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class GameRecorder {
-     public Queue<char[][]> recorder;
-
+     public Queue<RecordFrame> recorder;
+   public Queue<RecordFrame> originalRecording;
     GameMap gameMap;
     Player player;
     Ghost [] ghosts;
@@ -27,6 +28,7 @@ public class GameRecorder {
         this.ghosts = ghosts;
         this.gameManager = gameManager;
         recorder= new LinkedList<>();
+        originalRecording = new LinkedList<>();
         loadHashMap();
     }
     public void loadHashMap(){
@@ -36,6 +38,7 @@ public class GameRecorder {
         imageMap.put('0', gameMap.image);
         imageMap.put('1', a.image);
         imageMap.put('2', b.image);
+        imageMap.put('3',c.image);
         imageMap.put('4', d.image);
         imageMap.put('5', e.image);
         imageMap.put('6', f.image);
@@ -103,7 +106,18 @@ public class GameRecorder {
 
             }
         }
-        recorder.add(recordMap);
+        recorder.add(new RecordFrame(gameManager.score, player.lives, recordMap,gameManager.coins));
+        originalRecording.add(new RecordFrame(gameManager.score,player.lives,deepCopy(recordMap),gameManager.coins));
+    }
+    private char[][] deepCopy(char[][] source) {
+        char[][] copy = new char[source.length][source[0].length];
+        for (int i = 0; i < source.length; i++) {
+            System.arraycopy(source[i], 0, copy[i], 0, source[i].length);
+        }
+        return copy;
+    }
+    public void resetRecording (){
+        recorder= new LinkedList<>(originalRecording);
     }
 
 

@@ -21,7 +21,7 @@ public class GameManager implements Drawable {
     public int coins = 0;
     int initialCoins;
     public int level=1;
-    public boolean resettingLevel;
+    public boolean updating;
     FruitManager fruitManager;
 
 
@@ -64,31 +64,31 @@ public class GameManager implements Drawable {
         return player.lives <= 0;
     }
     private void handleEncounter() {
-        if (resettingLevel) return;
+        if (updating) return;
         Timer timer = new Timer();
         for (Ghost ghost : ghosts) {
             if (ghost.locX == player.locX && ghost.locY == player.locY) {
                 if (ghost.chasable) {
-                    resettingLevel=true;
+                    updating=true;
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
                             player.lives--;
                             fruitManager.clearFruit();
                             restartLevel();
-                            resettingLevel=false;
+                            updating=false;
                         }
                     }, 150);
                     return;
                 }else {
-                    resettingLevel=true;
+                    updating=true;
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
                             score += 200;
                             ghost.setDefaultValues();
                             chamber.add(ghost);
-                            resettingLevel=false;
+                            updating=false;
 
                         }
                     },120);

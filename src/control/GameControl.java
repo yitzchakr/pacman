@@ -2,7 +2,7 @@ package control;
 
 import model.GameManager;
 import model.GameMap;
-import model.LeaderBoard;
+import model.recorder.LeaderBoard;
 import model.Player;
 import model.ghost.Ghost;
 import model.ghost.GhostFactory;
@@ -79,16 +79,18 @@ public class GameControl implements Runnable {
     }
 
     private void playRecording() {
-        if (gameRecorder.recorder.isEmpty()){
+        if (gameRecorder.originalRecording.isEmpty()){
             JOptionPane.showMessageDialog(window,"No Recording Available");
             return;
         }
+        gameRecorder.resetRecording();
         recordPanel= new RecordPanel(gameRecorder);
+
         mainPanel.add(recordPanel,"record");
         cardLayout.show(mainPanel, "record");
-
+        recordPanel.requestFocusInWindow();
         recordThread= new Thread(() -> {
-            while (!recordPanel.ended) {
+            while (!recordPanel.ended && !recordPanel.stopPlaying) {
                 recordPanel.repaint();
 
                 try {

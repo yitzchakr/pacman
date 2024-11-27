@@ -2,7 +2,7 @@ package view;
 
 import model.GameManager;
 import model.GameMap;
-import model.LeaderBoard;
+import model.recorder.LeaderBoard;
 import model.Player;
 import model.ghost.Ghost;
 

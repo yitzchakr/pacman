@@ -4,7 +4,7 @@
 1710 test
 1420 yitzchak
 1300 horray
+1280 New Board
 1234 cccc
 1230 highscore
 1111 aaaa
-1100 yes
